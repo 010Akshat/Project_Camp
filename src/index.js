@@ -17,4 +17,3 @@ connectDB()
         console.log("MongoDB connection Error", err);
         process.exit(1);
     })
-app.listen()
