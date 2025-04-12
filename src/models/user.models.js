@@ -103,7 +103,7 @@ userSchema.methods.generateTemporaryToken = function(){
 
     const tokenExpiry = Date.now() + (20*60*1000) // 20min
 
-    return {unHashedToken,hashedToken,tokenExpiry}
+    return {unHashedToken,hashedToken,tokenExpiry};
 } 
 
 

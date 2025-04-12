@@ -1,5 +1,12 @@
 import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
+import { ApiError } from "./api-error.js";
+
+// Sometimes when third party is involved , they are not automatically imported and process.env does not work
+// Hence we import them explicitly in this file
+import dotenv from "dotenv";
+dotenv.config(); 
+
 
 const sendMail = async (options) =>{
     const mailGenerator = new Mailgen({
@@ -34,6 +41,7 @@ const sendMail = async (options) =>{
         await transporter.sendMail(mail)
     }catch(error){
         console.log("Email failed",error)
+        throw new ApiError(400,"Email sending failed")
     }
 } 
 

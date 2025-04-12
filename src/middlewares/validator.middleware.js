@@ -3,7 +3,6 @@ import {ApiError} from "../utils/api-error.js"
 export const validate = (req,res,next)=>{
     // Error returned by userRegistrationValidator will be accepted in validationResult(req);
     const errors = validationResult(req);
-
     // If no errors proceed to auth.controller.js
     if(errors.isEmpty()){
         return next();
