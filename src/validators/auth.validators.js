@@ -47,6 +47,21 @@ const resetPasswordValidator = ()=>{
     ]
 }
 
+const userChangeCurrentPasswordValidator = () => {
+  return [
+    body("oldPassword").notEmpty().withMessage("Old password is required"),
+    body("newPassword").notEmpty().withMessage("New password is required"),
+  ];
+};
+
+const userForgotPasswordValidator = () => {
+  return [
+    body("email")
+      .notEmpty().withMessage("Email is required")
+      .isEmail().withMessage("Email is invalid"),
+  ];
+};
+
 const updateProfileValidator = ()=>{
     return [
         // we dont need tp req.body here
@@ -68,4 +83,11 @@ const updateProfileValidator = ()=>{
 // The array we are returning here will go to validation middleware (see in auth.routes.js)
 // It will be received by  validationResult(req);
 // Point to be noted we have already encountered error here still we go to validator and return response from their.
-export {userRegistrationValidator, userLoginValidator , resetPasswordValidator,updateProfileValidator}
+export {
+        userRegistrationValidator, 
+        userLoginValidator, 
+        resetPasswordValidator,
+        updateProfileValidator,
+        userChangeCurrentPasswordValidator,
+        userForgotPasswordValidator
+    }

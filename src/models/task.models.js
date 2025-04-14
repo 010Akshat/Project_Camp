@@ -9,11 +9,11 @@ const taskSchema = new Schema({
     description:{
         type:String,
     },
-    project:{
-        type:Schema.Types.ObjectId,
-        ref:"Project",
-        required:true
-    },
+    // project:{
+    //     type:Schema.Types.ObjectId,
+    //     ref:"Project",
+    //     required:true
+    // },
     assignedTo:{
         type:Schema.Types.ObjectId,
         ref:"User",
@@ -24,11 +24,14 @@ const taskSchema = new Schema({
         ref:"User",
         required:true
     },
-    status:{
-        type:String,
-        enum:AvailableTaskStatuses,
-        default:TaskStatusEnum.TODO,
-        required:true
+    subtasks:{
+        type:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:"SubTask"
+            }
+        ],
+        default : []
     },
     attachments:{
         // here we can multiple attachments , it can be either images, audio , vides ,txt anything

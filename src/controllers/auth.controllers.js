@@ -429,24 +429,25 @@ const updateProfile = asyncHandler(async (req,res)=>{
 });
 
 const deleteAccount = asyncHandler(async (req,res)=>{
-    try {
-        const user = await User.findOne({_id:req.user._id});
-        if(!user){
-            throw new ApiError(400,"User doesn' exist");
-        }
+    // Bhot kuch hoga isme .
+    // try {
+    //     const user = await User.findOne({_id:req.user._id});
+    //     if(!user){
+    //         throw new ApiError(400,"User doesn' exist");
+    //     }
 
-        const avatar = await deleteOnCloudinary(user.avatar.url,"avatars");
+    //     const avatar = await deleteOnCloudinary(user.avatar.url,"avatars");
 
-        // if(!avatar.url){
-        //     throw new ApiError(400,"Error while deleting avatar"); 
-        // }
-        const deletedUser = await User.findByIdAndDelete(user._id);
+    //     // if(!avatar.url){
+    //     //     throw new ApiError(400,"Error while deleting avatar"); 
+    //     // }
+    //     const deletedUser = await User.findByIdAndDelete(user._id);
 
-        return res.status(201).json( new ApiResponse(201, deletedUser, "Account Deleted Successfully"));
+    //     return res.status(200).json( new ApiResponse(201, deletedUser, "Account Deleted Successfully"));
 
-    } catch (error) {
-        throw new ApiError(500,error?.message || "Error While Deleting the account");
-    }
+    // } catch (error) {
+    //     throw new ApiError(500,error?.message || "Error While Deleting the account");
+    // }
 });
 const deleteAvatar = asyncHandler(async (req,res)=>{
     try{

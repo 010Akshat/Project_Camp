@@ -10,6 +10,19 @@ const projectSchema = new Schema({
     description:{
         type:String
     },
+    totalMembers:{
+        type:Number,
+        default:0
+    },
+    board:{
+        type:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:"Board"
+            }
+        ],
+        default:[]
+    },
     createdBy:{
         type:Schema.Types.ObjectId,
         ref:"User",

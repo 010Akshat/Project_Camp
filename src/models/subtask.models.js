@@ -6,11 +6,11 @@ const subtaskSchema = new Schema({
         required:true,
         trim:true
     },
-    task:{
-        type:Schema.Types.ObjectId,
-        ref:"Task",
-        required:true
-    },
+    // task:{
+    //     type:Schema.Types.ObjectId,
+    //     ref:"Task",
+    //     required:true
+    // },
     isCompleted:{
         type:Boolean,
         default:false
