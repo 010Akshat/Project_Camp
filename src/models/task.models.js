@@ -9,15 +9,19 @@ const taskSchema = new Schema({
     description:{
         type:String,
     },
-    // project:{
-    //     type:Schema.Types.ObjectId,
-    //     ref:"Project",
-    //     required:true
-    // },
-    assignedTo:{
+    project:{
         type:Schema.Types.ObjectId,
-        ref:"User",
+        ref:"Project",
         required:true
+    },
+    assignedTo:{
+        type:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:"User",
+                required:true
+            }
+        ]
     },
     assignedBy:{
         type:Schema.Types.ObjectId,
@@ -28,13 +32,13 @@ const taskSchema = new Schema({
         type:[
             {
                 type:Schema.Types.ObjectId,
-                ref:"SubTask"
+                ref:"Task"
             }
         ],
         default : []
     },
     attachments:{
-        // here we can multiple attachments , it can be either images, audio , vides ,txt anything
+        // here we can multiple attachments , it can be either images, audio , videos ,txt anything
         type:[
             {
                 url:String,

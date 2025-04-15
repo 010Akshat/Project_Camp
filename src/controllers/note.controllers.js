@@ -1,6 +1,6 @@
-import { ProjectNote } from "../models/note.models";
-import { ApiError } from "../utils/api-error";
-import { ApiResponse } from "../utils/api-response";
+import { ProjectNote } from "../models/note.models.js";
+import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
 const createNote = async (req, res) => {
   // notevalidator will be used as middleware
   // verifyJWT ,verifyProject && verifyProjectMember will be used as middleware
@@ -65,7 +65,6 @@ const getNotes = async (req, res) => {
     throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
   }
 }
-
 const getNoteById = async (req, res) => {
   // get note by id
   try {
@@ -84,8 +83,6 @@ const getNoteById = async (req, res) => {
     throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
   }
 };
-
-
 const updateNote = async (req, res) => {
   // update note
   try {
@@ -106,7 +103,6 @@ const updateNote = async (req, res) => {
     throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
   }
 };
-
 const deleteNote = async (req, res) => {
   // delete note
   try {
@@ -126,5 +122,9 @@ const deleteNote = async (req, res) => {
   }
 };
   
-  export { createNote, deleteNote, getNoteById, getNotes, updateNote };
+  export { createNote, 
+           deleteNote, 
+           getNoteById, 
+           getNotes, 
+           updateNote };
   

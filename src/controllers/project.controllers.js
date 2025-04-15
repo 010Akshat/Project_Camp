@@ -158,6 +158,7 @@
             username:"$projectMember.username",
             name:"$projectMember.fullname",
             email:"$projectMember.email",
+            user:1,
             role:1
           }
         }
