@@ -1,7 +1,7 @@
 import mongoose,{Schema} from "mongoose";
 
 const boardSchema = new Schema ({
-    name:{
+    status:{
         type:String,
         required:true
     },
@@ -9,7 +9,7 @@ const boardSchema = new Schema ({
         type: String,
         required : true,
     },
-    projectId:{
+    project:{
         type: Schema.Types.ObjectId,
         ref:"Project",
         required:true
@@ -25,7 +25,8 @@ const boardSchema = new Schema ({
                 type:Schema.Types.ObjectId,
                 ref:"Task"
             }
-        ]
+        ],
+        default:[]
     }
 },{timestamps:true})
 

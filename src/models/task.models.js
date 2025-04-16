@@ -19,9 +19,9 @@ const taskSchema = new Schema({
             {
                 type:Schema.Types.ObjectId,
                 ref:"User",
-                required:true
             }
-        ]
+        ],
+        default:[]
     },
     assignedBy:{
         type:Schema.Types.ObjectId,
@@ -48,7 +48,6 @@ const taskSchema = new Schema({
         ],
         default:[]
     }
-
 },{timestamps:true})
 
 export const Task = mongoose.model("Task",taskSchema)

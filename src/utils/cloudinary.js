@@ -46,7 +46,7 @@ const deleteOnCloudinary = async (url,folder)=>{
         const imagePublicId = `Project_Camp/${folder}/${image.split('.')[0]}`;
         console.log(imagePublicId)
         const response = await cloudinary.uploader.destroy(imagePublicId)
-        console.log("File is deleted on cloudinary",response.result) // If file not found then response.result = not found & if file is deleted response.result = ok
+        console.log(response) // If file not found then response.result = not found & if file is deleted response.result = ok
         return response
     }
     catch(error){

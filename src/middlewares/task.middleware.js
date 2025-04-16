@@ -11,6 +11,9 @@ const verifyTask = asyncHandler (async (req,res,next)=>{
             throw new ApiError(400,"Task not present in Array");
         }
         const task = await Task.findById(taskId);
+        if(!task){
+            throw new ApiError("Error while fetching task");
+        }
         req.task=task;
         next();
 })

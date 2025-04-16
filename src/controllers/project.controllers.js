@@ -1,13 +1,14 @@
-  import Project from "../models/project.models.js"
-  import { User } from "../models/user.models.js";
-  import { ProjectMember } from "../models/projectmember.models.js";
-  import { ApiError } from "../utils/api-error.js";
-  import { ApiResponse } from "../utils/api-response.js";
-  import { UserRolesEnum } from "../utils/constants.js";
-  const createProject = async (req, res) => {
+import mongoose from "mongoose";
+import {Project} from "../models/project.models.js"
+import { User } from "../models/user.models.js";
+import { ProjectMember } from "../models/projectmember.models.js";
+import { ApiError } from "../utils/api-error.js";
+import { ApiResponse } from "../utils/api-response.js";
+import { UserRolesEnum } from "../utils/constants.js";
+import { asyncHandler } from "../utils/async-handler.js";
+  const createProject = asyncHandler(async (req, res) => {
     // create project
-    try {
-      const {name, description} = req.body;
+      let {name, description} = req.body;
       
       const existedProject = await Project.findOne({
         name,
@@ -22,6 +23,7 @@
       const project = await Project.create({
         name,
         description,
+        totalMembers:1,
         createdBy : req.user._id 
       })
   
@@ -42,19 +44,15 @@
               .json(
                 new ApiResponse(201,project,"project Successfully Created")
               )
-    } catch (error) {
-          throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
-    }
 
-  };
+  });
 
-  const getProjects = async (req, res) => {
+  const getProjects = asyncHandler(async (req, res) => {
     // get all projects
-    try {
       const projects = await ProjectMember.aggregate([
         {
           $match:{
-            user:req.user._id
+            user:new mongoose.Types.ObjectId(req.user._id)
           }
         },
         {
@@ -76,34 +74,47 @@
           $project:{
             name:"$project_details.name",
             description:"$project_details.description",
+            totalMembers:"$project_details.totalMembers",
             role:1,
-            totalMembers:1
           }
         }
       ])
-      if(!projects){
+      if(projects.length===0){
         throw new ApiError(400,"Error occured while fetching projects");
       }
   
       return res
               .status(200)
               .json(new ApiResponse(200,projects,"Projects Fetched Successfully"))
-    } catch (error) {
-      throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
-    }
-  };
+  });
   
-  const getProjectById = async (req, res) => {
+  // Todo
+  const getProjectById = asyncHandler(async (req, res) => {
     // get project by Id
     return res
             .status(200)
             .json(new ApiResponse(200,req.project,"Project Fetched Successfully"));
-  };
-  
-  const updateProject = async (req, res) => {
+  });
+  const updateProject = asyncHandler(async (req, res) => {
     // update project
-    try {
       const {name, description, projectId} = req.body;
+
+      if(req.project.name===name && req.project.description===description){
+        return res
+              .status(200)
+              .json(
+                new ApiResponse(200,"Project Successfully Updated")
+              )
+      }
+      else if(req.project.name==name){
+        req.project.description = description;
+        await req.project.save();
+        return res
+              .status(200)
+              .json(
+                new ApiResponse(200,"Project Successfully Updated")
+              )
+      }
       const existedProject = await Project.findOne(
         {
           name, 
@@ -123,12 +134,9 @@
               .json(
                 new ApiResponse(200,"Project Successfully Updated")
               )
-    } catch (error) {
-      throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
-    }
-  };
+  });
   
-  const getProjectMembers = async (req, res) => {
+  const getProjectMembers = asyncHandler(async (req, res) => {
     // get project members
     const {projectId} = req.body
     try {
@@ -172,12 +180,11 @@
     } catch (error) {
       throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
     }
-  };
+  });
   
-  const addMemberToProject = async (req, res) => {
+  const addMemberToProject = asyncHandler(async (req, res) => {
     // add member to project
-    try {
-      const {userToAddId,projectId,role} = req.body;
+      const {userToAddId,projectId,role} = req.body; 
       const user = await User.findById(userToAddId);
       if(!user){
         throw new ApiError(400, "Invalid User Id")
@@ -189,12 +196,15 @@
       if(existedUserInProject){
         throw new ApiError(409,"User Already Exist In Project");
       }
+      if(role==UserRolesEnum.ADMIN){
+        throw new ApiError(400,"Project can only have one admin")
+      }
       const projectMember = await ProjectMember.create({
           user:userToAddId,
           project:projectId,
           role
       })
-      if(projectMember){
+      if(!projectMember){
         throw new ApiError(400,"Error While creating Project Member");
       }
       const project = req.project;
@@ -203,12 +213,9 @@
       return res
               .status(201)
               .json(new ApiResponse(201,"Project Member Created"))
-    } catch (error) {
-      throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
-    }
-  };
+  });
   
-  const updateMemberRole = async (req, res) => {
+  const updateMemberRole = asyncHandler(async (req, res) => {
     // update member role
     try {
       const {projectId,userToUpdateId,role} = req.body;
@@ -226,6 +233,9 @@
       if(existedUserInProject.role==UserRolesEnum.ADMIN){
         throw new ApiError(400,"Admin Cannot change its own role");
       }
+      if(existedUserInProject.role==role){
+        return res.status(200).json(new ApiResponse(200,"User Role Same"));
+      }
       if(role==UserRolesEnum.ADMIN){
         throw new ApiError(400,"A Project can only have one Admin");
       }
@@ -236,13 +246,15 @@
       throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
     }
 
-  };
+  });
 
-  const deleteMember = async (req, res) => {
+  // Todo
+  const deleteMember = asyncHandler(async (req, res) => {
     // delete member from project
-  };
+  });
 
-  const deleteProject = async (req, res) => {
+  //Todo
+  const deleteProject = asyncHandler(async (req, res) => {
 
     // we have to delete related content.
 
@@ -254,7 +266,7 @@
     // } catch (error) {
     //   throw new ApiError(error?.statusCode || 500, error?.message || "Internal Server Error");
     // }
-  };
+  });
   
   export {
     addMemberToProject,

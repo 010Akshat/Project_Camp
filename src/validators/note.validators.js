@@ -1,3 +1,4 @@
+import {body} from "express-validator";
 const notesValidator = () => {
     return [
         body("content")
